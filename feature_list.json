@@ -1,0 +1,18 @@
+{
+  "project": "harness-template",
+  "description": "harness-template",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "max_review_iterations": 3,
+    "reports_required_from_id": 21,
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked",
+      "cancelled"
+    ]
+  },
+  "features": []
+}
