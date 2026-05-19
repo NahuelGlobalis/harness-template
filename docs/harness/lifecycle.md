@@ -1,4 +1,4 @@
-﻿# Harness multi-agente — harness-template
+# Harness multi-agente — harness-template
 
 Este documento es la fuente canónica del protocolo operativo del arnés. `AGENTS.md` solo enruta; los prompts en `agents/` solo adaptan cada rol a estas reglas.
 
@@ -8,7 +8,7 @@ Este documento es la fuente canónica del protocolo operativo del arnés. `AGENT
 - **WSL/Linux:** `./init.sh`
 
 Ambos comandos ejecutan `scripts/validate_harness.py`. `init.ps1` debe resolver
-primero el Python del repo (`deepagents-api/.venv`) antes de depender de
+primero el Python del repo (`.venv`) antes de depender de
 `python` o `py` globales. Los comandos detallados de tests viven en
 `docs/engineering/verification/`.
 

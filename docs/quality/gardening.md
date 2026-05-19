@@ -1,4 +1,4 @@
-﻿# Gardening — harness-template
+# Gardening — harness-template
 
 Este documento es el runbook canónico del Gardener.
 
@@ -15,7 +15,7 @@ El Gardener detecta drift entre documentación, código y arnés. No implementa 
 
 ## Checks de drift
 
-- **Árbol documentado vs real:** compara `docs/engineering/conventions/` contra `deepagents-api/agents/` y `deepagents-web/`.
+- **Árbol documentado vs real:** compara `docs/engineering/conventions/` contra las carpetas de código de producto (como `src/`, `apps/`, etc.).
 - **Arquitectura completa:** verifica que `docs/architecture/overview.md` cubre capas y módulos existentes.
 - **Referencias rotas:** detecta paths en Markdown que ya no existen.
 - **Archivos largos:** busca `.py`, `.ts` y `.tsx` de producto con más de 300 líneas.

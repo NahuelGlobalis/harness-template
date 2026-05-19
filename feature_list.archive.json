@@ -1,5 +1,20 @@
 {
   "project": "harness-template",
   "description": "Archivo de features con status done",
-  "features": []
+  "features": [
+    {
+      "id": 1,
+      "name": "harness_base_files",
+      "title": "Archivos Base del Arnés",
+      "description": "Crea los archivos base que faltan para validar el arnés: los scripts de inicialización init.ps1 y init.sh, y los documentos de ingeniería base docs/engineering/conventions/shared.md y docs/engineering/verification/shared.md.",
+      "acceptance": [
+        "Existe init.ps1 en la raíz que busca el venv de Python (.venv, venv) de forma genérica y corre validate_harness.py",
+        "Existe init.sh en la raíz que busca el venv de Python (.venv, venv) de forma genérica y corre validate_harness.py",
+        "Existe docs/engineering/conventions/shared.md con convenciones de codificación genéricas y adaptabilidad para otras tecnologías",
+        "Existe docs/engineering/verification/shared.md con guías de verificación genéricas para Python, Node.js y Monorepos",
+        "python scripts/validate_harness.py no reporta faltas de archivos base"
+      ],
+      "status": "done"
+    }
+  ]
 }

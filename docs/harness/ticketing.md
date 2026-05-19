@@ -1,4 +1,4 @@
-﻿# Ticketing — harness-template
+# Ticketing — harness-template
 
 Este documento es la fuente canónica para escribir features en `feature_list.json`.
 
@@ -49,9 +49,9 @@ Cada criterio debe ser:
   "title": "Modelo de Usuario",
   "description": "Dataclass User con id, name, email y created_at.",
   "acceptance": [
-    "Existe deepagents-api/agents/models/user.py con la clase User",
+    "Existe src/models/user.py con la clase User",
     "User.new(name, email) genera id incremental y created_at en ISO 8601",
-    "deepagents-api/tests/test_user.py valida creación y serialización a dict"
+    "tests/test_user.py valida creación y serialización a dict"
   ],
   "use_sdd": false,
   "status": "pending"

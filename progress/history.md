@@ -430,3 +430,16 @@ Observación no bloqueante: el diff incluye `validate_progress_hygiene` en `vali
 
 ### Veredicto review
 **Veredicto:** APPROVED
+
+## 2026-05-19 — feature 1 harness_base_files
+
+### Estado
+- done
+
+### Resumen implementación
+- `init.ps1` (Nuevo)
+- `init.sh` (Nuevo)
+- `docs/engineering/conventions/shared.md` (Nuevo)
+
+### Veredicto review
+**Veredicto:** APPROVED

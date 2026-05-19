@@ -1,6 +1,154 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
+import pytest
+from pathlib import Path
 import docs_for
+
+
+@pytest.fixture(autouse=True)
+def mock_docs_env(tmp_path, monkeypatch):
+    # 1. Create a mock docs directory in tmp_path
+    tmp_docs_dir = tmp_path / "docs"
+    tmp_docs_dir.mkdir()
+    
+    # 2. Create a mock README.md
+    readme_content = """# Documentacion - test-project
+
+## Organizacion
+
+<!-- sections:begin -->
+| Key | Contenido |
+|---|---|
+| `harness` | Ciclo de vida |
+| `engineering` | Convenciones |
+| `quality` | Principios |
+| `architecture` | Diseno |
+| `operations` | Runbooks |
+| `exec-plans` | Planes |
+<!-- sections:end -->
+
+## Keys
+
+<!-- keys:begin -->
+| Key | Contenido |
+|---|---|
+| `shared` | Transversal |
+| `api` | Backend |
+| `web` | Frontend |
+| `design` | Transversal |
+| `delivery` | Transversal |
+| `gardening` | Transversal |
+| `client-agents` | Frontend |
+| `system-agents` | Backend |
+<!-- keys:end -->
+
+## Mapa documental
+
+### Harness
+
+<!-- harness:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `harness/lifecycle.md` | Ciclo | shared,delivery,gardening |
+| `harness/ticketing.md` | Tickets | shared,design,delivery,gardening |
+| `harness/templates/progress/brief.md` | Briefs | shared,design,gardening |
+| `harness/templates/progress/current.empty.md` | Vacio | shared,delivery,gardening |
+| `harness/templates/progress/current.active.md` | Activo | shared,delivery,gardening |
+| `harness/templates/progress/impl.md` | Impl | shared,delivery |
+| `harness/templates/progress/review.md` | Review | shared,delivery |
+<!-- harness:end -->
+
+### Architecture
+
+<!-- architecture:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `architecture/overview.md` | Overview | shared,design,delivery,gardening |
+| `architecture/adr/` | ADRs | shared,design,gardening |
+<!-- architecture:end -->
+
+### Engineering
+
+<!-- engineering:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `engineering/conventions/shared.md` | Convenciones | shared |
+| `engineering/conventions/api.md` | Convenciones backend | api |
+| `engineering/verification/api.md` | Backend verif | api |
+| `engineering/conventions/client-agents.md` | client agents | client-agents |
+| `engineering/verification/system-agents.md` | system agents | system-agents |
+<!-- engineering:end -->
+
+### Operations
+
+<!-- operations:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `operations/docker.md` | Docker | shared,design,delivery,gardening |
+<!-- operations:end -->
+
+### Quality
+
+<!-- quality:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `quality/golden-principles.md` | Principios | shared,design,delivery,gardening |
+| `quality/gardening.md` | Gardening | shared,gardening,design |
+| `quality/quality-scores.md` | Scores | shared,gardening,design,delivery |
+| `quality/self-review-checklist.md` | Self-review | shared,delivery |
+<!-- quality:end -->
+
+### Exec Plans
+
+<!-- exec-plans:begin -->
+| Documento | Contenido | key |
+|---|---|---|
+| `exec-plans/template.md` | Plantilla | shared,design |
+| `exec-plans/completed/` | Completados | shared,design,gardening |
+<!-- exec-plans:end -->
+"""
+    tmp_readme_path = tmp_docs_dir / "README.md"
+    tmp_readme_path.write_text(readme_content, encoding="utf-8")
+    
+    # 3. Create all mock files in the tmp_docs_dir so they "exist" during tests
+    mock_files = [
+        "harness/lifecycle.md",
+        "harness/ticketing.md",
+        "harness/templates/progress/brief.md",
+        "harness/templates/progress/current.empty.md",
+        "harness/templates/progress/current.active.md",
+        "harness/templates/progress/impl.md",
+        "harness/templates/progress/review.md",
+        "architecture/overview.md",
+        "engineering/conventions/shared.md",
+        "engineering/conventions/api.md",
+        "engineering/verification/api.md",
+        "engineering/conventions/client-agents.md",
+        "engineering/verification/system-agents.md",
+        "operations/docker.md",
+        "quality/golden-principles.md",
+        "quality/gardening.md",
+        "quality/quality-scores.md",
+        "quality/self-review-checklist.md",
+        "exec-plans/template.md",
+    ]
+    for rel_file in mock_files:
+        p = tmp_docs_dir / rel_file
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(f"content of {rel_file}", encoding="utf-8")
+        
+    mock_dirs = [
+        "architecture/adr",
+        "exec-plans/completed",
+    ]
+    for rel_dir in mock_dirs:
+        p = tmp_docs_dir / rel_dir
+        p.mkdir(parents=True, exist_ok=True)
+        
+    # Apply monkeypatch to override module constants in docs_for
+    monkeypatch.setattr(docs_for, "DOCS_DIR", tmp_docs_dir)
+    monkeypatch.setattr(docs_for, "README_PATH", tmp_readme_path)
+    monkeypatch.setattr(docs_for, "ROOT", tmp_path)
 
 
 def test_parse_implementation_routing_has_api_docs() -> None:
@@ -122,4 +270,3 @@ def test_quality_gardening_route_contains_drift_material() -> None:
     assert "docs/quality/golden-principles.md" in paths
     assert "docs/quality/gardening.md" in paths
     assert "docs/quality/quality-scores.md" in paths
-
