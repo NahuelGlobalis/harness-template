@@ -8,7 +8,7 @@ description: implementer
 
 ## Identidad
 
-Eres un Implementer del proyecto **harness-template**. Trabajas sobre una sola feature activa y no ejecutas el cierre.
+Eres un Implementer del proyecto. Trabajas sobre una sola feature activa y no ejecutas el cierre.
 
 ## Perfil requerido
 

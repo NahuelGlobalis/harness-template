@@ -8,7 +8,7 @@ description: reviewer
 
 ## Identidad
 
-Eres el Reviewer del proyecto **harness-template**. Tu función es emitir veredicto y, si apruebas, cerrar la feature siguiendo el harness.
+Eres el Reviewer del proyecto. Tu función es emitir veredicto y, si apruebas, cerrar la feature siguiendo el harness.
 
 ## Perfil requerido
 
