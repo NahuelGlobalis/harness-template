@@ -14,20 +14,5 @@
       "cancelled"
     ]
   },
-  "features": [
-    {
-      "id": 2,
-      "name": "harness_cleanup_and_dynamic_checks",
-      "title": "Limpieza y Flexibilización del Arnés",
-      "description": "Renombrar archivos de operaciones para corregir discrepancias, flexibilizar validate_quality.py para que los escaneos sean dinámicos y multi-tecnología, y desacoplar las pruebas de docs_for de la estructura real del repositorio.",
-      "acceptance": [
-        "docs/operations/example.md se renombra a docs/operations/docker.md y docs/README.md se actualiza correspondientemente",
-        "scripts/validate_quality.py escanea dinámicamente carpetas que no sean del arnés, soporta múltiples extensiones (.py, .js, .ts, etc.) y detecta debug outputs correspondientes ignorando node_modules y dist",
-        "scripts/tests/test_docs_for.py usa un mock temporal del README.md en tmp_path mediante fixture de pytest para desacoplarse del README.md real",
-        "Se corrigen referencias en docs/harness/lifecycle.md, docs/quality/gardening.md, docs/harness/ticketing.md",
-        "Tanto validate_harness.py como pytest se ejecutan y terminan con 0 errores y 100% de éxito"
-      ],
-      "status": "in_progress"
-    }
-  ]
+  "features": []
 }

@@ -39,6 +39,7 @@ Este archivo es el indice global de `docs/` y el contrato de routing que consume
 |---|---|---|
 | `harness/lifecycle.md` | Estados, transiciones y cierre del arnes | shared,delivery,gardening |
 | `harness/ticketing.md` | Definition of Ready, acceptance y escritura de tickets | shared,design,delivery,gardening |
+| `harness/feature_list.schema.json` | Schema JSON formal para validación de features | shared,design,delivery,gardening |
 | `harness/templates/progress/brief.md` | Plantilla para briefs de gardening y arquitectura | shared,design,gardening |
 | `harness/templates/progress/current.empty.md` | Plantilla para sesion vacia | shared,delivery,gardening |
 | `harness/templates/progress/current.active.md` | Plantilla para sesion activa | shared,delivery,gardening |
@@ -90,6 +91,7 @@ Este archivo es el indice global de `docs/` y el contrato de routing que consume
 | Documento | Contenido | key |
 |---|---|---|
 | `exec-plans/template.md` | Plantilla para planes largos | shared,design |
+| `exec-plans/active/` | Planes de ejecución activos en curso | shared,design |
 | `exec-plans/completed/` | Planes completados historicos | shared,design,gardening |
 <!-- exec-plans:end -->
 

@@ -443,3 +443,16 @@ Observación no bloqueante: el diff incluye `validate_progress_hygiene` en `vali
 
 ### Veredicto review
 **Veredicto:** APPROVED
+
+## 2026-05-19 — feature 2 harness_cleanup_and_dynamic_checks
+
+### Estado
+- done
+
+### Resumen implementación
+- `docs/operations/docker.md` (renombrado desde `docs/operations/example.md`)
+- `scripts/validate_quality.py`
+- `scripts/tests/test_docs_for.py`
+
+### Veredicto review
+**Veredicto:** APPROVED
