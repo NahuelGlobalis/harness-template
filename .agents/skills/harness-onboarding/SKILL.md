@@ -20,22 +20,27 @@ y [`references/file-targets.md`](references/file-targets.md) para saber exactame
 
 ## Precondición
 
-El harness-template ya fue copiado al proyecto destino y los archivos base del harness existen.
-Si los archivos base del harness no están presentes en la raíz del repositorio, ejecutá el script de copia:
+La carpeta `.agents/` ya fue copiada al proyecto destino.
+Como primer paso del onboarding, el agente debe asegurarse de desplegar (o actualizar) los archivos base del arnés ejecutando el script de copia:
+
 - En Windows (PowerShell):
   ```powershell
-  .agents/skills/copy-files.ps1
+  .agents/skills/harness-onboarding/copy-files.ps1
+  ```
+- En Linux / WSL:
+  ```bash
+  pwsh .agents/skills/harness-onboarding/copy-files.ps1
   ```
 
-Si falta algún archivo base después de esto, detenerse y comunicarlo antes de continuar.
+*(Si PowerShell no está disponible en Linux, el agente debe copiar de forma recursiva todo el contenido de `.agents/skills/harness-onboarding/template/` directamente en la raíz de destino).*
 
-Verificar con:
+Verificar la estructura inicial ejecutando:
 ```
 ./init.ps1   (Windows)
 ./init.sh    (Linux / WSL)
 ```
 
-Si `init` falla por archivos faltantes del harness, no continuar hasta resolverlo.
+Si el init falla por archivos faltantes o desactualizados del arnés, resolverlo antes de continuar con la Fase 1.
 
 ---
 

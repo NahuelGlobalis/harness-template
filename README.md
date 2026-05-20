@@ -51,11 +51,11 @@ Desde la raíz de tu proyecto destino, ejecuta el script de PowerShell para copi
 
 *   **En Windows (PowerShell):**
     ```powershell
-    .\.agents\skills\copy-files.ps1
+    .\.agents\skills\harness-onboarding\copy-files.ps1
     ```
 *   **En Linux / WSL / macOS:**
     ```bash
-    pwsh .agents/skills/copy-files.ps1
+    pwsh .agents/skills/harness-onboarding/copy-files.ps1
     ```
     > [!NOTE]
     > Si no dispones de PowerShell en Linux/macOS, puedes copiar el contenido de la carpeta `.agents/skills/harness-onboarding/template/` directamente a la raíz de tu repositorio manteniendo la misma estructura de directorios.
