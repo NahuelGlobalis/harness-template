@@ -1,335 +1,186 @@
-# Harness Template — Arnés de Agentes de IA
+# Harness Template — Arnés de Agentes de IA 🚀
 
-Plantilla base para instalar un **arnés multi-agente** en cualquier repositorio. Proporciona estructura, roles, ciclo de vida de features y validación automática para que agentes de IA trabajen de forma ordenada, trazable y sin romper el proyecto.
-
----
-
-## ¿Qué es el Arnés?
-
-Un arnés de agentes es un conjunto de contratos, herramientas y documentación que vive dentro del repositorio del proyecto. Define:
-
-- **Quién hace qué**: roles de agente con responsabilidades claras (arquitecto, implementador, revisor, jardinero).
-- **Cómo avanza el trabajo**: ciclo de vida de features con estados explícitos (`pending → in_progress → done`).
-- **Qué se valida y cuándo**: checkpoints automáticos (ejecutados por `init`) y checkpoints humanos (ejecutados por el revisor).
-- **Dónde está cada cosa**: estructura documental canónica consultable por los agentes sin ambigüedad.
-
-El arnés **no reemplaza tu código**: convive con él en la misma raíz del repositorio y no interfiere con el stack del proyecto.
+Este repositorio contiene la plantilla base y las herramientas necesarias para instalar y configurar un **arnés multi-agente** en cualquier proyecto. El arnés proporciona una estructura documental, roles de agente predefinidos, un ciclo de vida para las tareas (features) y validaciones automáticas, permitiendo que agentes de IA colaboren de forma ordenada, segura y trazable sin interferir con el stack tecnológico de tu código.
 
 ---
 
-## Estructura de este Repositorio
+## 🗺️ Flujo de Trabajo del Onboarding
 
-```
-harness-template/
-├── .agents/
-│   └── skills/
-│       ├── copy-files.ps1              # Copia el template al repo destino
-│       └── harness-onboarding/
-│           ├── SKILL.md                # Instrucciones de onboarding para el agente
-│           ├── references/
-│           │   ├── detection-guide.md  # Cómo detectar el stack del proyecto destino
-│           │   └── file-targets.md     # Qué editar en cada archivo del template
-│           └── template/               # Archivos que se instalan en el repo destino
-│               ├── AGENTS.md
-│               ├── CHECKPOINTS.md
-│               ├── feature_list.json
-│               ├── init.ps1 / init.sh
-│               ├── agents/             # Prompts de roles (architect, implementer, reviewer, gardener)
-│               ├── scripts/            # CLI Python: open/block/close/cancel features + validación
-│               ├── docs/               # Estructura documental canónica
-│               └── progress/           # Sesión activa e historial
-└── README.md
+El siguiente diagrama ilustra el proceso completo desde la copia inicial del arnés hasta la activación del entorno operativo en el repositorio destino:
+
+```mermaid
+graph TD
+    A[Repositorio de Destino] -->|Paso 1: Copiar .agents/| B[Repo Destino con .agents/]
+    B -->|Paso 2: Ejecutar copy-files.ps1| C[Despliegue de Estructura Base]
+    C -->|Paso 3: Invocar Agente de IA| D[Ejecución de la Skill: harness-onboarding]
+    
+    subgraph Skill de Onboarding (Fases)
+        D --> D1[Fase 1: Análisis del Stack y Estructura]
+        D1 --> D2[Fase 2: Personalización de Archivos y Docs]
+        D2 --> D3[Fase 3: Validación con ./init.ps1 o ./init.sh]
+        D3 --> D4[Fase 4: Generación de Informe de Onboarding]
+    end
+    
+    D4 -->|Init Verde exit code 0| E[Arnés Listo y Operativo]
 ```
 
 ---
 
-## Instalación en un Proyecto Nuevo
+## 🛠️ ¿Cómo funciona la Skill `harness-onboarding`?
 
-### Prerrequisitos
+La skill `harness-onboarding` (definida en [.agents/skills/harness-onboarding/SKILL.md](file:///c:/Dev/GitWSL/Test/harness-template/.agents/skills/harness-onboarding/SKILL.md)) es un conjunto de instrucciones estructuradas para que un agente de IA realice la instalación y personalización del arnés de forma autónoma. El proceso se divide en **4 fases secuenciales**:
 
-- Python 3.8+ disponible en el PATH (requerido por los scripts del arnés).
-- Acceso de escritura a la raíz del repositorio destino.
+| Fase | Tarea del Agente | Archivos Afectados / Comandos |
+| :--- | :--- | :--- |
+| **Fase 1: Análisis** | Detecta el stack tecnológico, el lenguaje principal, la estructura de carpetas, y los comandos de test/lint. | Lectura de dependencias (`package.json`, `pyproject.toml`, `go.mod`, etc.) |
+| **Fase 2: Edición** | Adapta los archivos genéricos del template con la información real descubierta en el análisis. | `feature_list.json`, `docs/architecture/overview.md`, `docs/engineering/verification/shared.md`, `docs/harness/*.md` |
+| **Fase 3: Validación** | Ejecuta el script de inicialización y resuelve cualquier error (`[FAIL]`) hasta que esté en verde. | Ejecución de `./init.ps1` (Windows) o `./init.sh` (Linux/WSL) |
+| **Fase 4: Informe** | Entrega un informe de cierre al usuario detallando el stack detectado, cambios realizados y tareas pendientes. | Mensaje de finalización en Markdown |
 
-### Paso 1 — Copiar los archivos del template
+---
 
-Desde la raíz de **este repositorio** (`harness-template`), ejecuta:
+## 🚀 Guía de Instalación Paso a Paso
 
-**Windows (PowerShell):**
-```powershell
-.\.agents\skills\copy-files.ps1
-```
+Sigue estos pasos para instalar el arnés en tu proyecto:
 
-El script te pedirá (o infiere automáticamente) el directorio raíz del proyecto destino y copia toda la carpeta `template/` allí, preservando la estructura de subdirectorios. Los archivos ya existentes en el destino **no se sobreescriben**.
+### Paso 1 — Copiar la carpeta `.agents/`
+Copia la carpeta `.agents` (que contiene las skills, los prompts de roles de agentes y los scripts de copia) desde este repositorio a la raíz de tu proyecto destino.
 
-**Linux / WSL:**
-```bash
-# El script es PowerShell; ejecutarlo desde pwsh o copiar manualmente:
-pwsh .agents/skills/copy-files.ps1
-```
+### Paso 2 — Desplegar la estructura base (Template)
+Desde la raíz de tu proyecto destino, ejecuta el script de PowerShell para copiar todos los archivos del arnés (como `AGENTS.md`, `CHECKPOINTS.md`, los scripts de CLI Python y las plantillas de documentación) a su ubicación final en la raíz del repositorio:
 
-### Paso 2 — Ejecutar el onboarding con tu agente de IA
+*   **En Windows (PowerShell):**
+    ```powershell
+    .\.agents\skills\copy-files.ps1
+    ```
+*   **En Linux / WSL / macOS:**
+    ```bash
+    pwsh .agents/skills/copy-files.ps1
+    ```
+    > [!NOTE]
+    > Si no dispones de PowerShell en Linux/macOS, puedes copiar el contenido de la carpeta `.agents/skills/harness-onboarding/template/` directamente a la raíz de tu repositorio manteniendo la misma estructura de directorios.
 
-Con los archivos ya copiados en el repo destino, abre ese repositorio en tu IDE y pide al agente:
-
-```
+### Paso 3 — Iniciar el Onboarding con el Agente de IA
+Abre tu proyecto destino en tu IDE favorito y solicita al agente de IA la instalación del arnés usando una frase clave similar a esta:
+```text
 Instala el harness para este proyecto
 ```
-
-El agente invocará la skill `harness-onboarding` y completará automáticamente las 4 fases:
-
-| Fase | Qué hace el agente |
-|---|---|
-| **1 — Análisis** | Detecta nombre, stack, comandos de test/lint y estructura de carpetas |
-| **2 — Edición** | Completa `feature_list.json`, `docs/architecture/overview.md`, `docs/engineering/verification/shared.md`, `docs/harness/lifecycle.md` y `docs/harness/ticketing.md` |
-| **3 — Validación** | Ejecuta `./init.ps1` o `./init.sh` y corrige hasta obtener exit code 0 |
-| **4 — Informe** | Entrega un resumen de lo configurado y las secciones pendientes |
-
-### Paso 3 — Verificar que el init está verde
-
-```powershell
-# Windows
-./init.ps1
-
-# Linux / WSL
-./init.sh
-```
-
-La salida debe terminar con **0 errores**. Si hay fallos `[FAIL]`, el agente los corrige antes de finalizar el onboarding.
+El agente detectará la skill `harness-onboarding`, ejecutará las fases correspondientes y configurará todo de forma automática.
 
 ---
 
-## Uso Diario con el Arnés Instalado
+## 💻 Compatibilidad y Configuración según tu IDE o Agente de IA
 
-### Abrir una feature
+El arnés y sus skills están diseñados para ser agnósticos y compatibles con las principales herramientas de desarrollo asistido por IA. A continuación se detalla cómo invocarlos y configurarlos en cada entorno:
 
-```bash
-python scripts/open_feature.py <feature_id>
-```
+### 1. Antigravity (Google DeepMind)
+Antigravity es un entorno altamente estructurado que detecta y ejecuta automáticamente las skills de desarrollo.
+*   **Cómo copiar:** Copia la carpeta `.agents/` a la raíz del repositorio de trabajo.
+*   **Cómo invocar:** Escribe en el chat:
+    ```text
+    Instala el harness para este proyecto
+    ```
+    Antigravity detectará la skill `harness-onboarding` en el directorio de skills, abrirá [SKILL.md](file:///c:/Dev/GitWSL/Test/harness-template/.agents/skills/harness-onboarding/SKILL.md) con su herramienta de visualización de archivos, y ejecutará el análisis y la edición guiada de forma autónoma.
+*   **Uso diario:** El agente lee el archivo `AGENTS.md` al iniciar cada turno de trabajo para identificar el rol solicitado (Arquitecto, Implementador, Revisor o Jardinero) y actualizar el archivo de progreso `progress/current.md`.
 
-Marca la feature como `in_progress` y actualiza `progress/current.md`.
+### 2. Windsurf (Codeium)
+Windsurf soporta de manera nativa la definición de habilidades personalizadas a través de la carpeta `.agents/skills/`.
+*   **Cómo copiar:** Coloca la carpeta `.agents/` en el raíz de tu espacio de trabajo.
+*   **Cómo invocar:** En el chat de Cascade (el agente interactivo de Windsurf), ingresa:
+    ```text
+    Instala el harness para este proyecto
+    ```
+    Cascade leerá la sección frontmatter de `SKILL.md` (donde se define el nombre y descripción del trigger de la skill) e iniciará el plan de ejecución en 4 fases, solicitando tus aprobaciones previas en cada paso.
 
-### Bloquear / desbloquear
+### 3. Cursor
+Cursor utiliza configuraciones personalizadas y reglas de contexto específicas.
+*   **Configuración recomendada:** Crea o edita el archivo `.cursorrules` en la raíz de tu proyecto destino agregando la siguiente referencia:
+    ```markdown
+    Lee siempre el archivo AGENTS.md en la raíz antes de realizar cualquier tarea.
+    Para el onboarding inicial, sigue las instrucciones de la skill en: .agents/skills/harness-onboarding/SKILL.md
+    ```
+*   **Cómo invocar:** En el chat de Cursor Composer (o Cmd+K), escribe:
+    ```text
+    @SKILL.md Instala el harness para este proyecto
+    ```
+    Al utilizar el símbolo `@` y apuntar a `SKILL.md`, obligas a Cursor a incluir el archivo de instrucciones completo de la skill en su ventana de contexto activo.
 
-```bash
-python scripts/block_feature.py <feature_id>
-python scripts/unblock_feature.py <feature_id>
-```
+### 4. Cline / Roo Code (Roo Clinic)
+Cline y Roo Code son extensiones open-source potentes basadas en directivas de sistema.
+*   **Configuración recomendada:** Agrega al archivo `.clinerules` o `.instructions.md` la regla:
+    ```markdown
+    Antes de cualquier tarea de código, ejecuta init.ps1 (o init.sh) y lee AGENTS.md para conocer tu rol actual.
+    ```
+*   **Cómo invocar:** Ejecuta la siguiente orden en el chat de la extensión:
+    ```text
+    Lee las instrucciones en .agents/skills/harness-onboarding/SKILL.md y ejecuta el onboarding de este repositorio
+    ```
+    Cline tiene la capacidad de leer archivos locales, por lo que cargará la skill y ejecutará las tareas de edición y testing de forma secuencial.
 
-### Cerrar una feature (solo el Reviewer)
+### 5. Visual Studio Code (GitHub Copilot Chat)
+GitHub Copilot en VS Code permite referenciar archivos y el espacio de trabajo actual.
+*   **Configuración recomendada:** Crea un archivo en la ruta `.github/copilot-instructions.md` con el siguiente contenido:
+    ```markdown
+    Lee siempre AGENTS.md antes de comenzar a trabajar en cualquier feature y valida tus cambios con ./init.ps1 o ./init.sh.
+    ```
+*   **Cómo invocar:** En la barra de chat de Copilot, ingresa:
+    ```text
+    @workspace Lee el archivo .agents/skills/harness-onboarding/SKILL.md e instala el harness en este proyecto
+    ```
+    Copilot analizará el espacio de trabajo, localizará la guía y te asistirá escribiendo el código de configuración de los archivos.
 
-```bash
-python scripts/close_feature.py <feature_id>
-```
-
-Requiere `progress/review_<feature_name>.md` con `Veredicto: APPROVED` e init verde.
-
-### Cancelar
-
-```bash
-python scripts/cancel_feature.py <feature_id>
-```
-
-### Consultar estado del backlog
-
-```bash
-python scripts/harness_state.py
-```
-
-### Cargar documentación contextual
-
-```bash
-python scripts/docs_for.py --list all:all         # Ver todas las secciones disponibles
-python scripts/docs_for.py architecture:overview  # Leer un paquete concreto
-```
-
----
-
-## Componentes del Arnés Instalado
-
-### `AGENTS.md`
-Punto de entrada obligatorio. El agente lo lee primero en cada sesión: ejecuta `init`, lee `progress/current.md` y determina su rol antes de editar cualquier archivo.
-
-### `CHECKPOINTS.md`
-Define dos categorías de controles:
-- **A (automáticos)**: ejecutados por `init`. Validan integridad del arnés, coherencia del JSON, higiene del código y tests.
-- **H (humanos)**: los evalúa el Reviewer. Cubren acceptance real, arquitectura, seguridad y cierre de sesión.
-
-### `feature_list.json`
-Backlog estructurado. Cada feature tiene `id`, `name` (snake_case), `title`, `description`, `acceptance` (criterios verificables) y `status`. Las reglas en el bloque `rules` son inmutables.
-
-### `agents/`
-Prompts de sistema para cada rol:
-- `architect.md` — descubrimiento, diseño técnico y creación de backlog.
-- `implementer.md` — código, tests y evidencia de implementación.
-- `reviewer.md` — veredicto y cierre de features.
-- `gardener.md` — detección y corrección de drift documental/código.
-
-### `scripts/`
-CLI Python. Todos los scripts son idempotentes y validan precondiciones antes de mutar estado.
-
-| Script | Acción |
-|---|---|
-| `open_feature.py` | Activa una feature (`pending → in_progress`) |
-| `block_feature.py` | Bloquea una feature activa |
-| `unblock_feature.py` | Desbloquea una feature bloqueada |
-| `close_feature.py` | Cierra una feature aprobada (`in_progress → done`) |
-| `cancel_feature.py` | Cancela una feature |
-| `harness_state.py` | Muestra el estado completo del backlog |
-| `validate_harness.py` | Validación completa (invocada por `init`) |
-| `validate_quality.py` | Validación de calidad de código |
-| `docs_for.py` | CLI documental: carga paquetes de contexto para los agentes |
-
-### `docs/`
-Estructura documental canónica:
-
-```
-docs/
-├── README.md                          # Índice y contrato de routing para docs_for.py
-├── architecture/overview.md           # Stack, capas y decisiones de diseño
-├── engineering/
-│   ├── conventions/shared.md          # Convenciones de código del proyecto
-│   └── verification/shared.md         # Comandos de test y lint
-├── harness/
-│   ├── lifecycle.md                   # Protocolo operativo del arnés
-│   └── ticketing.md                   # Convenciones de tickets y features
-├── exec-plans/                        # Planes de ejecución por feature
-├── operations/                        # Runbooks y procedimientos operativos
-└── quality/                           # Estándares y métricas de calidad
-```
-
-### `progress/`
-- `current.md` — sesión activa: feature en curso, estado y notas.
-- `history.md` — bitácora append-only de sesiones cerradas.
-- `archive/` — documentos de implementación y revisión de features cerradas.
+### 6. OpenAI Codex / ChatGPT (Custom GPTs / API)
+En entornos sin acceso nativo al sistema de archivos local, debes actuar como puente de ejecución.
+*   **Cómo utilizar:**
+    1.  Crea un **Custom GPT** y sube el contenido de `SKILL.md`, `detection-guide.md` y `file-targets.md` como parte de sus archivos de conocimiento (Knowledge).
+    2.  Alternativamente, puedes copiar y pegar el contenido de [SKILL.md](file:///c:/Dev/GitWSL/Test/harness-template/.agents/skills/harness-onboarding/SKILL.md) directamente al inicio de la sesión del chat.
+    3.  Pídele al modelo que analice tu stack y edite los archivos necesarios.
+    4.  Copia las salidas sugeridas del modelo a tus archivos locales y ejecuta los scripts del CLI o `./init.sh` en tu terminal local, retroalimentando al chat con los resultados o errores obtenidos.
 
 ---
 
-## Compatibilidad con IDEs y Agentes de IA
+## 📂 Estructura General del Arnés Desplegado
 
-El arnés es agnóstico a la plataforma. Funciona con cualquier agente que pueda leer archivos del repositorio. A continuación se indica cómo activarlo en cada entorno:
+Una vez finalizado el onboarding, tu repositorio de destino lucirá con la siguiente jerarquía de archivos del arnés conviviendo con tu código fuente:
 
-### Cursor
-
-Cursor lee automáticamente `AGENTS.md` si está en la raíz del repositorio. Para activar el arnés:
-
-1. Abre el proyecto (con el arnés ya instalado) en Cursor.
-2. En el chat del agente, escribe:
-   ```
-   Lee AGENTS.md y ejecuta init antes de empezar.
-   ```
-3. Para instalar el arnés en un proyecto nuevo desde Cursor, clona este repositorio como workspace adicional y escribe:
-   ```
-   Instala el harness para este proyecto
-   ```
-   Cursor usará la skill `harness-onboarding` automáticamente.
-
-### Windsurf
-
-Windsurf (Cascade) soporta skills declaradas en `.agents/skills/`. El arnés está diseñado nativamente para este entorno:
-
-1. Con este repositorio abierto como workspace, escribe en el chat:
-   ```
-   Instala el harness para este proyecto
-   ```
-2. Cascade detecta la skill `harness-onboarding` y ejecuta las 4 fases sin intervención manual.
-3. Para uso diario, el agente lee `AGENTS.md` al inicio de cada sesión y sabe qué rol asumir.
-
-### Antigravity
-
-Antigravity respeta archivos de instrucciones en la raíz. Para activar el arnés:
-
-1. Asegúrate de que `AGENTS.md` y `CHECKPOINTS.md` estén en la raíz del proyecto (tras el onboarding).
-2. En el system prompt o en el primer mensaje de sesión, incluye:
-   ```
-   Lee AGENTS.md antes de comenzar cualquier tarea.
-   ```
-3. Para el onboarding inicial, copia este repositorio junto al proyecto destino y pide al agente que ejecute `.agents/skills/copy-files.ps1` seguido del onboarding.
-
-### Visual Studio Code (con GitHub Copilot / extensiones de agente)
-
-VS Code no tiene una convención estándar de `AGENTS.md`, pero puedes activar el arnés de dos formas:
-
-**Con GitHub Copilot Chat:**
-```
-@workspace Lee el archivo AGENTS.md y ejecuta ./init.ps1 antes de empezar.
-```
-
-**Con `.github/copilot-instructions.md`** (si usas Copilot Workspace):
-Crea o agrega al archivo `.github/copilot-instructions.md`:
-```markdown
-Lee siempre AGENTS.md al inicio de cada sesión y ejecuta init antes de editar código.
-```
-
-**Con extensiones MCP (Model Context Protocol):**
-Si tu extensión soporta MCP, las skills en `.agents/skills/` pueden registrarse como herramientas disponibles.
-
-### OpenAI Codex / ChatGPT con herramientas
-
-Codex opera vía API o playground. Para usar el arnés:
-
-1. Incluye el contenido de `AGENTS.md` en el system prompt de la sesión.
-2. Usa el contexto de `feature_list.json` y `progress/current.md` como parte del prompt de usuario.
-3. Las transiciones de estado (abrir/cerrar features) se ejecutan manualmente vía CLI Python en tu terminal local.
-
-```bash
-python scripts/open_feature.py 1
-# Pega el contenido de progress/current.md en el contexto de Codex
-```
-
-### Claude Code (Anthropic)
-
-Claude Code lee `AGENTS.md` y archivos Markdown del repositorio de forma nativa. Para activar el arnés:
-
-1. Inicia Claude Code en la raíz del proyecto (con el arnés instalado).
-2. Claude Code detectará `AGENTS.md` automáticamente en el contexto inicial.
-3. Para el onboarding desde cero, ejecuta:
-   ```
-   claude "Instala el harness para este proyecto siguiendo .agents/skills/harness-onboarding/SKILL.md"
-   ```
-4. Para uso diario, el flujo recomendado es:
-   ```
-   claude "Lee AGENTS.md, ejecuta init y continúa con la feature en curso"
-   ```
-
----
-
-## Flujo Completo de una Feature (Resumen)
-
-```
-1. Arquitecto diseña la feature y la agrega a feature_list.json
-2. python scripts/open_feature.py <id>        ← activa la feature
-3. Implementador trabaja → código + tests
-4. python scripts/validate_harness.py         ← init verde requerido
-5. Reviewer evalúa checkpoints H1–H3
-6. Reviewer escribe progress/review_<name>.md con Veredicto: APPROVED
-7. python scripts/close_feature.py <id>       ← cierre + archivo
+```text
+raiz-del-proyecto/
+├── .agents/
+│   ├── agents/                     # Prompts de roles del sistema (architect, implementer, reviewer, gardener)
+│   └── skills/
+│       └── harness-onboarding/     # Archivos de la skill de instalación
+├── docs/                           # Documentación técnica del proyecto
+│   ├── README.md                   # Índice documental
+│   ├── architecture/               # Diagramas, stack y decisiones técnicas
+│   ├── engineering/                # Convenciones de código y comandos de verificación
+│   └── harness/                    # Manual operativo y flujos del arnés
+├── progress/                       # Seguimiento de tareas activas e histórico
+│   ├── current.md                  # Feature actualmente bajo desarrollo
+│   └── history.md                  # Historial append-only de features terminadas
+├── scripts/                        # CLI en Python para la gestión de features
+│   ├── open_feature.py             # Abrir feature (pending -> in_progress)
+│   ├── close_feature.py            # Cerrar feature (in_progress -> done)
+│   ├── block_feature.py            # Bloquear feature por impedimentos
+│   ├── harness_state.py            # Ver estado del backlog y features
+│   └── validate_harness.py         # Validador de consistencia y formato
+├── AGENTS.md                       # Protocolo de entrada para el agente
+├── CHECKPOINTS.md                  # Checkpoints de calidad de código y diseño
+├── feature_list.json               # Backlog de features del proyecto
+├── init.ps1                        # Script de inicialización (Windows)
+└── init.sh                         # Script de inicialización (Linux/WSL)
 ```
 
 ---
 
-## Reglas del Arnés
+## ⚠️ Reglas Importantes del Arnés
 
-- **Una sola feature `in_progress` a la vez.**
-- **No se cierra una feature sin init verde** (exit code 0).
-- **No se inventan features** en `feature_list.json`: solo lo inferible del código real.
-- **No se eliminan archivos del arnés**: solo se edita su contenido.
-- **`scripts/` y `progress/history.md` son inmutables** por el agente implementador.
-- **`agents/*.md` no llevan el nombre del proyecto**: los roles son genéricos y reutilizables.
+Para asegurar que el arnés funcione de manera efectiva y no se desvirtúe su propósito, ten en cuenta las siguientes directrices:
 
----
-
-## Verificación Rápida Post-Instalación
-
-```powershell
-# Windows
-./init.ps1
-
-# Linux / WSL
-./init.sh
-```
-
-Salida esperada: `✅ 0 errores` con todos los checkpoints A1–A5 en verde.
-
----
-
-Este arnés garantiza consistencia, trazabilidad y calidad auditada en cada contribución de agentes autónomos de IA, independientemente del stack tecnológico del proyecto.
+> [!IMPORTANT]
+> **1. Una sola tarea activa a la vez:** Nunca trabajes en más de una feature en estado `in_progress` simultáneamente.
+> 
+> **2. Init verde obligatorio:** No se permite realizar fusiones de ramas (merges) ni cerrar una feature en `feature_list.json` si el comando `./init.ps1` o `./init.sh` devuelve algún error (`exit code` distinto de 0).
+> 
+> **3. Mantén los roles genéricos:** Los prompts en `.agents/agents/` son transversales y no deben modificarse con nombres o rutas específicas de un único proyecto.
+> 
+> **4. Sin features fantasma:** Todas las features añadidas a `feature_list.json` deben ser reales, realizables y coherentes con la hoja de ruta del proyecto.
