@@ -20,19 +20,32 @@ y [`references/file-targets.md`](references/file-targets.md) para saber exactame
 
 ## Precondición
 
-La carpeta `.agents/` ya fue copiada al proyecto destino.
-Como primer paso del onboarding, el agente debe asegurarse de desplegar (o actualizar) los archivos base del arnés ejecutando el script de copia:
+La skill `harness-onboarding` fue copiada al directorio de skills del IDE. El agente debe **localizar la ruta donde vive esta skill** antes de ejecutar cualquier script, ya que esa ruta varía según el IDE:
+
+| IDE / Agente | Ruta donde vive la skill |
+| :--- | :--- |
+| Windsurf (Cascade) | `.windsurf/skills/harness-onboarding/` |
+| Cursor | `.cursor/skills/harness-onboarding/` |
+| VS Code (Copilot) | `.github/skills/harness-onboarding/` |
+| Cline | `.cline/skills/harness-onboarding/` |
+| Roo Code | `.roo/skills/harness-onboarding/` |
+| Claude Code | `.claude/skills/harness-onboarding/` |
+| Fallback universal | `.agents/skills/harness-onboarding/` |
+
+Como primer paso del onboarding, el agente debe desplegar (o actualizar) los archivos base del arnés ejecutando el script de copia ubicado dentro de la carpeta de la skill:
 
 - En Windows (PowerShell):
   ```powershell
-  .agents/skills/harness-onboarding/copy-files.ps1
+  <ruta-de-la-skill>/copy-files.ps1
   ```
 - En Linux / WSL:
   ```bash
-  pwsh .agents/skills/harness-onboarding/copy-files.ps1
+  pwsh <ruta-de-la-skill>/copy-files.ps1
   ```
 
-*(Si PowerShell no está disponible en Linux, el agente debe copiar de forma recursiva todo el contenido de `.agents/skills/harness-onboarding/template/` directamente en la raíz de destino).*
+Donde `<ruta-de-la-skill>` es la ruta detectada en la tabla anterior (ej: `.windsurf/skills/harness-onboarding/copy-files.ps1`).
+
+*(Si PowerShell no está disponible en Linux, el agente debe copiar de forma recursiva todo el contenido de `<ruta-de-la-skill>/template/` directamente en la raíz de destino).*
 
 Verificar la estructura inicial ejecutando:
 ```

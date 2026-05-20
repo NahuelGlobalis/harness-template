@@ -10,12 +10,11 @@ El siguiente diagrama ilustra el proceso completo desde la copia inicial del arn
 
 ```mermaid
 graph TD
-    A[Repositorio de Destino] -->|Paso 1: Copiar .agents/| B[Repo Destino con .agents/]
+    A[Repositorio de Destino] -->|Paso 1: Copiar harness-onboarding/ al directorio de skills del IDE| B[Repo Destino con skill instalada]
     B -->|Paso 2: Invocar Agente de IA| C[Ejecución de la Skill: harness-onboarding]
     
-    subgraph Skill de Onboarding (Fases)
-        C --> C0[Despliegue de Estructura Base via copy-files.ps1]
-        C0 --> C1[Fase 1: Análisis del Stack y Estructura]
+    subgraph "Skill de Onboarding (Fases)"
+        C --> C1[Fase 1: Análisis del Stack y Estructura]
         C1 --> C2[Fase 2: Personalización de Archivos y Docs]
         C2 --> C3[Fase 3: Validación con ./init.ps1 o ./init.sh]
         C3 --> C4[Fase 4: Generación de Informe de Onboarding]
@@ -41,87 +40,87 @@ La skill `harness-onboarding` (definida en [.agents/skills/harness-onboarding/SK
 
 ## 🚀 Guía de Instalación Paso a Paso
 
-Sigue estos pasos para instalar el arnés en tu proyecto:
+El proceso es simple: **copia la carpeta `harness-onboarding/` al directorio de skills que busca tu IDE** y luego pídele al agente que instale el harness. La skill hará todo el resto de forma autónoma.
 
-### Paso 1 — Copiar la carpeta `.agents/`
-Copia la carpeta `.agents` (que contiene las skills, los prompts de roles de agentes y los scripts de copia) desde este repositorio a la raíz de tu proyecto destino.
+### Paso 1 — Copiar la skill al directorio correcto de tu IDE
+
+Cada IDE/agente busca las skills en una ubicación específica. Copia la carpeta `harness-onboarding/` (que contiene `SKILL.md` y sus archivos de soporte) al directorio que corresponda:
+
+| IDE / Agente | Directorio destino (proyecto) |
+| :--- | :--- |
+| **Windsurf (Cascade)** | `.windsurf/skills/harness-onboarding/` |
+| **Cursor** | `.cursor/skills/harness-onboarding/` |
+| **VS Code (GitHub Copilot)** | `.github/skills/harness-onboarding/` |
+| **Cline** | `.cline/skills/harness-onboarding/` |
+| **Roo Code** | `.roo/skills/harness-onboarding/` |
+| **Claude Code** | `.claude/skills/harness-onboarding/` |
+| **Universal (fallback)** | `.agents/skills/harness-onboarding/` |
+
+> **Nota:** Windsurf, VS Code (Copilot) y Claude Code también descubren skills en `.agents/skills/`, por lo que la carpeta universal sirve como fallback si no conoces la ruta exacta de tu IDE.
 
 ### Paso 2 — Iniciar el Onboarding con el Agente de IA
-Abre tu proyecto destino en tu IDE favorito y solicita al agente de IA la instalación del arnés usando una frase clave similar a esta:
+
+Abre tu proyecto destino en tu IDE y solicita la instalación con una frase como:
 ```text
 Instala el harness para este proyecto
 ```
-El agente detectará la skill `harness-onboarding`, ejecutará automáticamente el script de copia (`copy-files.ps1`) para desplegar la estructura base y completará las fases de personalización y validación del arnés de forma autónoma.
+El agente detectará automáticamente la skill `harness-onboarding`, la invocará y ejecutará las 4 fases de onboarding de forma autónoma.
 
 ---
 
-## 💻 Compatibilidad y Configuración según tu IDE o Agente de IA
+## 💻 Compatibilidad por IDE
 
-El arnés y sus skills están diseñados para ser agnósticos y compatibles con las principales herramientas de desarrollo asistido por IA. A continuación se detalla cómo invocarlos y configurarlos en cada entorno:
-
-### 1. Antigravity (Google DeepMind)
-Antigravity es un entorno altamente estructurado que detecta y ejecuta automáticamente las skills de desarrollo.
-*   **Cómo copiar:** Copia la carpeta `.agents/` a la raíz del repositorio de trabajo.
-*   **Cómo invocar:** Escribe en el chat:
+### 1. Windsurf (Cascade)
+*   **Directorio de la skill:** `.windsurf/skills/harness-onboarding/`
+*   **También detecta:** `.agents/skills/harness-onboarding/`
+*   **Cómo invocar:** Cascade detecta la skill automáticamente por su `description` en el frontmatter. Escribe en el chat:
     ```text
     Instala el harness para este proyecto
     ```
-    Antigravity detectará la skill `harness-onboarding` en el directorio de skills, abrirá [SKILL.md](file:///c:/Dev/GitWSL/Test/harness-template/.agents/skills/harness-onboarding/SKILL.md) con su herramienta de visualización de archivos, y ejecutará el análisis y la edición guiada de forma autónoma.
-*   **Uso diario:** El agente lee el archivo `AGENTS.md` al iniciar cada turno de trabajo para identificar el rol solicitado (Arquitecto, Implementador, Revisor o Jardinero) y actualizar el archivo de progreso `progress/current.md`.
 
-### 2. Windsurf (Codeium)
-Windsurf soporta de manera nativa la definición de habilidades personalizadas a través de la carpeta `.agents/skills/`.
-*   **Cómo copiar:** Coloca la carpeta `.agents/` en el raíz de tu espacio de trabajo.
-*   **Cómo invocar:** En el chat de Cascade (el agente interactivo de Windsurf), ingresa:
+### 2. Cursor
+*   **Directorio de la skill:** `.cursor/skills/harness-onboarding/`
+*   **Cómo invocar:** Cursor detecta la skill por su descripción. En el chat del agente escribe:
     ```text
     Instala el harness para este proyecto
     ```
-    Cascade leerá la sección frontmatter de `SKILL.md` (donde se define el nombre y descripción del trigger de la skill) e iniciará el plan de ejecución en 4 fases, solicitando tus aprobaciones previas en cada paso.
 
-### 3. Cursor
-Cursor utiliza configuraciones personalizadas y reglas de contexto específicas.
-*   **Configuración recomendada:** Crea o edita el archivo `.cursorrules` en la raíz de tu proyecto destino agregando la siguiente referencia:
-    ```markdown
-    Lee siempre el archivo AGENTS.md en la raíz antes de realizar cualquier tarea.
-    Para el onboarding inicial, sigue las instrucciones de la skill en: .agents/skills/harness-onboarding/SKILL.md
-    ```
-*   **Cómo invocar:** En el chat de Cursor Composer (o Cmd+K), escribe:
+### 3. VS Code (GitHub Copilot — Agent Mode)
+*   **Directorio de la skill:** `.github/skills/harness-onboarding/`
+*   **También detecta:** `.agents/skills/harness-onboarding/` y `.claude/skills/harness-onboarding/`
+*   **Cómo invocar:** En el chat de Copilot en modo agente, escribe:
     ```text
-    @SKILL.md Instala el harness para este proyecto
+    Instala el harness para este proyecto
     ```
-    Al utilizar el símbolo `@` y apuntar a `SKILL.md`, obligas a Cursor a incluir el archivo de instrucciones completo de la skill en su ventana de contexto activo.
 
-### 4. Cline / Roo Code (Roo Clinic)
-Cline y Roo Code son extensiones open-source potentes basadas en directivas de sistema.
-*   **Configuración recomendada:** Agrega al archivo `.clinerules` o `.instructions.md` la regla:
-    ```markdown
-    Antes de cualquier tarea de código, ejecuta init.ps1 (o init.sh) y lee AGENTS.md para conocer tu rol actual.
-    ```
-*   **Cómo invocar:** Ejecuta la siguiente orden en el chat de la extensión:
+### 4. Cline
+*   **Directorio de la skill:** `.cline/skills/harness-onboarding/`
+*   **También detecta:** `.clinerules/skills/` y `.claude/skills/`
+*   **Cómo invocar:** En el chat de Cline escribe:
     ```text
-    Lee las instrucciones en .agents/skills/harness-onboarding/SKILL.md y ejecuta el onboarding de este repositorio
+    Instala el harness para este proyecto
     ```
-    Cline tiene la capacidad de leer archivos locales, por lo que cargará la skill y ejecutará las tareas de edición y testing de forma secuencial.
 
-### 5. Visual Studio Code (GitHub Copilot Chat)
-GitHub Copilot en VS Code permite referenciar archivos y el espacio de trabajo actual.
-*   **Configuración recomendada:** Crea un archivo en la ruta `.github/copilot-instructions.md` con el siguiente contenido:
-    ```markdown
-    Lee siempre AGENTS.md antes de comenzar a trabajar en cualquier feature y valida tus cambios con ./init.ps1 o ./init.sh.
-    ```
-*   **Cómo invocar:** En la barra de chat de Copilot, ingresa:
+### 5. Roo Code
+*   **Directorio de la skill:** `.roo/skills/harness-onboarding/`
+*   **Cómo invocar:** En el chat de Roo escribe:
     ```text
-    @workspace Lee el archivo .agents/skills/harness-onboarding/SKILL.md e instala el harness en este proyecto
+    Instala el harness para este proyecto
     ```
-    Copilot analizará el espacio de trabajo, localizará la guía y te asistirá escribiendo el código de configuración de los archivos.
 
-### 6. OpenAI Codex / ChatGPT (Custom GPTs / API)
-En entornos sin acceso nativo al sistema de archivos local, debes actuar como puente de ejecución.
-*   **Cómo utilizar:**
-    1.  Crea un **Custom GPT** y sube el contenido de `SKILL.md`, `detection-guide.md` y `file-targets.md` como parte de sus archivos de conocimiento (Knowledge).
-    2.  Alternativamente, puedes copiar y pegar el contenido de [SKILL.md](file:///c:/Dev/GitWSL/Test/harness-template/.agents/skills/harness-onboarding/SKILL.md) directamente al inicio de la sesión del chat.
-    3.  Pídele al modelo que analice tu stack y edite los archivos necesarios.
-    4.  Copia las salidas sugeridas del modelo a tus archivos locales y ejecuta los scripts del CLI o `./init.sh` en tu terminal local, retroalimentando al chat con los resultados o errores obtenidos.
+### 6. Claude Code (CLI)
+*   **Directorio de la skill (proyecto):** `.claude/skills/harness-onboarding/`
+*   **Directorio global (todas las sesiones):** `~/.claude/skills/harness-onboarding/`
+*   **Cómo invocar:** En la sesión de Claude Code escribe:
+    ```text
+    Instala el harness para este proyecto
+    ```
+
+### 7. Otros agentes / IDEs no listados
+Si tu IDE o agente no está en la lista, prueba con el directorio universal:
+*   **Directorio de la skill:** `.agents/skills/harness-onboarding/`
+
+Si tampoco funciona, consulta la documentación de tu herramienta buscando *"agent skills"* o *"SKILL.md"* para encontrar la ruta correcta. El formato `SKILL.md` es un estándar abierto compatible con la mayoría de los agentes modernos.
 
 ---
 
