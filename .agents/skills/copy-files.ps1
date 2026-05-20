@@ -1,7 +1,8 @@
 # Script para copiar archivos del template a la raíz del repositorio
 
-$templatePath = Join-Path $PSScriptRoot "harness-onboarding\template"
-$repoRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName
+$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $PSCommandPath }
+$templatePath = Join-Path $scriptDir "harness-onboarding\template"
+$repoRoot = (Get-Item $scriptDir).Parent.Parent.FullName
 
 Write-Host "Copiando archivos del template a la raíz del repo..." -ForegroundColor Cyan
 Write-Host "Template: $templatePath" -ForegroundColor Gray
