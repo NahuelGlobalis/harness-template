@@ -11,17 +11,17 @@ El siguiente diagrama ilustra el proceso completo desde la copia inicial del arn
 ```mermaid
 graph TD
     A[Repositorio de Destino] -->|Paso 1: Copiar .agents/| B[Repo Destino con .agents/]
-    B -->|Paso 2: Ejecutar copy-files.ps1| C[Despliegue de Estructura Base]
-    C -->|Paso 3: Invocar Agente de IA| D[Ejecución de la Skill: harness-onboarding]
+    B -->|Paso 2: Invocar Agente de IA| C[Ejecución de la Skill: harness-onboarding]
     
     subgraph Skill de Onboarding (Fases)
-        D --> D1[Fase 1: Análisis del Stack y Estructura]
-        D1 --> D2[Fase 2: Personalización de Archivos y Docs]
-        D2 --> D3[Fase 3: Validación con ./init.ps1 o ./init.sh]
-        D3 --> D4[Fase 4: Generación de Informe de Onboarding]
+        C --> C0[Despliegue de Estructura Base via copy-files.ps1]
+        C0 --> C1[Fase 1: Análisis del Stack y Estructura]
+        C1 --> C2[Fase 2: Personalización de Archivos y Docs]
+        C2 --> C3[Fase 3: Validación con ./init.ps1 o ./init.sh]
+        C3 --> C4[Fase 4: Generación de Informe de Onboarding]
     end
     
-    D4 -->|Init Verde exit code 0| E[Arnés Listo y Operativo]
+    C4 -->|Init Verde exit code 0| D[Arnés Listo y Operativo]
 ```
 
 ---
@@ -46,26 +46,12 @@ Sigue estos pasos para instalar el arnés en tu proyecto:
 ### Paso 1 — Copiar la carpeta `.agents/`
 Copia la carpeta `.agents` (que contiene las skills, los prompts de roles de agentes y los scripts de copia) desde este repositorio a la raíz de tu proyecto destino.
 
-### Paso 2 — Desplegar la estructura base (Template)
-Desde la raíz de tu proyecto destino, ejecuta el script de PowerShell para copiar todos los archivos del arnés (como `AGENTS.md`, `CHECKPOINTS.md`, los scripts de CLI Python y las plantillas de documentación) a su ubicación final en la raíz del repositorio:
-
-*   **En Windows (PowerShell):**
-    ```powershell
-    .\.agents\skills\harness-onboarding\copy-files.ps1
-    ```
-*   **En Linux / WSL / macOS:**
-    ```bash
-    pwsh .agents/skills/harness-onboarding/copy-files.ps1
-    ```
-    > [!NOTE]
-    > Si no dispones de PowerShell en Linux/macOS, puedes copiar el contenido de la carpeta `.agents/skills/harness-onboarding/template/` directamente a la raíz de tu repositorio manteniendo la misma estructura de directorios.
-
-### Paso 3 — Iniciar el Onboarding con el Agente de IA
+### Paso 2 — Iniciar el Onboarding con el Agente de IA
 Abre tu proyecto destino en tu IDE favorito y solicita al agente de IA la instalación del arnés usando una frase clave similar a esta:
 ```text
 Instala el harness para este proyecto
 ```
-El agente detectará la skill `harness-onboarding`, ejecutará las fases correspondientes y configurará todo de forma automática.
+El agente detectará la skill `harness-onboarding`, ejecutará automáticamente el script de copia (`copy-files.ps1`) para desplegar la estructura base y completará las fases de personalización y validación del arnés de forma autónoma.
 
 ---
 

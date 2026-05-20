@@ -75,10 +75,10 @@ def validate_base_files() -> None:
         "progress/history.md",
     ]
     role_files = [
-        "agents/architect.md",
-        "agents/implementer.md",
-        "agents/reviewer.md",
-        "agents/gardener.md",
+        ".agents/agents/architect.md",
+        ".agents/agents/implementer.md",
+        ".agents/agents/reviewer.md",
+        ".agents/agents/gardener.md",
     ]
 
     for relative_path in [*base_files, *role_files]:
