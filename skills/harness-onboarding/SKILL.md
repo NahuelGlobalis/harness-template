@@ -20,19 +20,7 @@ y [`references/file-targets.md`](references/file-targets.md) para saber exactame
 
 ## Precondición
 
-La skill `harness-onboarding` fue copiada al directorio de skills del IDE. El agente debe **localizar la ruta donde vive esta skill** antes de ejecutar cualquier script, ya que esa ruta varía según el IDE:
-
-| IDE / Agente | Ruta donde vive la skill |
-| :--- | :--- |
-| Windsurf (Cascade) | `.windsurf/skills/harness-onboarding/` |
-| Cursor | `.cursor/skills/harness-onboarding/` |
-| VS Code (Copilot) | `.github/skills/harness-onboarding/` |
-| Cline | `.cline/skills/harness-onboarding/` |
-| Roo Code | `.roo/skills/harness-onboarding/` |
-| Claude Code | `.claude/skills/harness-onboarding/` |
-| Fallback universal | `.agents/skills/harness-onboarding/` |
-
-Como primer paso del onboarding, el agente debe desplegar (o actualizar) los archivos base del arnés ejecutando el script de copia ubicado dentro de la carpeta de la skill:
+La skill `harness-onboarding` fue copiada al directorio de skills del IDE. El agente debe **localizar la ruta donde vive esta skill** antes de ejecutar cualquier script, ya que esa ruta varía según el IDE. Como primer paso del onboarding, el agente debe desplegar (o actualizar) los archivos base del arnés ejecutando el script de copia ubicado dentro de la carpeta de la skill:
 
 - En Windows (PowerShell):
   ```powershell
